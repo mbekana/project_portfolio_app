@@ -159,6 +159,16 @@ const Navbar = ({ toggleTheme, isDarkTheme }) => {
                 duration={500}
                 className={activeTab === 3 ? classes.activeTab : ""}
               />
+              <Tab
+                label="Resume"
+                component={Link}
+                to="resume"
+                spy={true}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                className={activeTab === 4 ? classes.activeTab : ""}
+              />
             </Tabs>
             <IconButton
               color="inherit"

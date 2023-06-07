@@ -43,37 +43,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Message = () => {
+const Message = ({ showMessage }) => {
   const classes = useStyles();
 
   return (
-    <Box
-      className="message-container"
-      style={{
-        position: "absolute",
-        top: 0,
-        height: "100%",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Card className={classes.card}>
-          <CheckCircleOutlinedIcon className={classes.icon} />
-          <Typography variant="h5" className={classes.message}>
-            Email sent successfully!
-          </Typography>
-        </Card>
-      </motion.div>
-    </Box>
+    <>
+      {showMessage && (
+        <Box
+          className="message-container"
+          style={{
+            position: "absolute",
+            top: 0,
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className={classes.card}>
+              <CheckCircleOutlinedIcon className={classes.icon} />
+              <Typography variant="h5" className={classes.message}>
+                Email sent successfully!
+              </Typography>
+            </Card>
+          </motion.div>
+        </Box>
+      )}
+    </>
   );
 };
 

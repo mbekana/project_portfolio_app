@@ -15,6 +15,52 @@ import SendIcon from "@material-ui/icons/Send";
 
 import Message from "../message/Message";
 
+const useStyles = makeStyles((theme) => ({
+  form: {
+    width: "100%", // Fix IE 11 issue.
+  },
+  submitBtn: {
+    width: "100%",
+  },
+  card: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 400,
+    height: 200,
+    padding: theme.spacing(4),
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    borderRadius: theme.spacing(2),
+    boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.15)",
+    transition: "box-shadow 0.3s ease-in-out",
+    "&:hover": {
+      boxShadow: "0px 4px 16px rgba(0, 0, 0, 0.2)",
+    },
+  },
+  icon: {
+    fontSize: 80,
+    marginBottom: theme.spacing(2),
+    color: theme.palette.primary.main,
+    animation: `$rotateOnce 1s ease-in-out`,
+  },
+  message: {
+    fontFamily: "Kaushan Script, cursive",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: theme.spacing(2),
+  },
+  "@keyframes rotateOnce": {
+    "0%": {
+      transform: "rotate(0deg)",
+    },
+    "100%": {
+      transform: "rotate(360deg)",
+    },
+  },
+}));
+
 const Contact = () => {
   const classes = useStyles();
   const [sending, setSending] = useState(false);
@@ -34,11 +80,11 @@ const Contact = () => {
     try {
       const messageBody = {
         ...values,
-        message: `Name: ${values.name}\Email: ${values.email}\n\n${values.message}`,
+        message: `Name: ${values.name}\nEmail: ${values.email}\n\n${values.message}`,
       };
 
       await emailjs.send(
-        "service_60xb7ud",
+        // "service_60xb7ud",
         "template_94883si",
         messageBody,
         "3R2euMpeKbg3pkIxp"
@@ -107,17 +153,19 @@ const Contact = () => {
   useEffect(() => {
     let timer;
 
-    if (sendEmailSuccess) {
+    if (sendEmailSuccess || errorMessage) {
       setShowMessage(true);
       timer = setTimeout(() => {
         setShowMessage(false);
+        setSendEmailSuccess(false);
+        setErrorMessage("");
       }, 3000); // Set the duration (in milliseconds) for the message to close automatically
     }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [sendEmailSuccess]);
+  }, [sendEmailSuccess, errorMessage]);
 
   const handleAlertClose = () => {
     setShowAlert(false);
@@ -138,7 +186,7 @@ const Contact = () => {
       <Box overflow="hidden">
         <div className="row">
           <Typography
-            variant="h2"
+            variant="h4"
             style={{
               fontFamily: "Kaushan Script, cursive",
               textAlign: "center",
@@ -152,130 +200,86 @@ const Contact = () => {
             I'd love to hear from you!
           </Typography>
         </div>
-        {!sendEmailSuccess ? (
-          <form className={classes.form} onSubmit={handleSubmit}>
-            <TextField
-              error={Boolean(formErrors.name)}
-              helperText={formErrors.name}
-              variant="filled"
-              margin="normal"
-              type="text"
-              fullWidth
-              id="name"
-              label={"Full Name"}
-              name="name"
-              value={formValues.name}
-              onBlur={handleInputBlur}
-              onChange={(e) =>
-                setFormValues({ ...formValues, name: e.target.value })
-              }
-            />
-            <TextField
-              error={Boolean(formErrors.email)}
-              helperText={formErrors.email}
-              variant="filled"
-              margin="normal"
-              fullWidth
-              id="email"
-              label={"Email"}
-              name="email"
-              value={formValues.email}
-              onBlur={handleInputBlur}
-              onChange={(e) =>
-                setFormValues({ ...formValues, email: e.target.value })
-              }
-            />
-            <TextField
-              error={Boolean(formErrors.message)}
-              helperText={formErrors.message}
-              variant="filled"
-              margin="normal"
-              fullWidth
-              name="message"
-              label="Message"
-              type="text"
-              id="message"
-              multiline
-              minRows={5}
-              value={formValues.message}
-              onBlur={handleInputBlur}
-              onChange={(e) =>
-                setFormValues({ ...formValues, message: e.target.value })
-              }
-            />
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              mt={2}
-            >
-              <Button
-                className={classes.submitBtn}
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                disabled={sending}
-                endIcon={<SendIcon />}
-              >
-                {sending ? (
-                  <CircularProgress size={24} color="primary" />
-                ) : (
-                  "Send Mail"
-                )}
-              </Button>
-            </Box>
-          </form>
-        ) : (
-          <Message />
+
+        {showAlert && (
+          <Alert
+            severity="success"
+            onClose={handleAlertClose}
+            style={{ marginTop: "1rem" }}
+          >
+            Email sent successfully!
+          </Alert>
+        )}
+        {errorMessage && (
+          <Alert severity="error" style={{ marginTop: "1rem" }}>
+            {errorMessage}
+          </Alert>
         )}
 
-        {errorMessage && (
-          <Box
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              margin: "8px",
-              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-            }}
+        <form className={classes.form} onSubmit={handleSubmit}>
+          <TextField
+            error={Boolean(formErrors.name)}
+            helperText={formErrors.name}
+            variant="filled"
+            margin="normal"
+            type="text"
+            fullWidth
+            id="name"
+            label={"Full Name"}
+            name="name"
+            value={formValues.name}
+            onBlur={handleInputBlur}
+            onChange={(e) =>
+              setFormValues({ ...formValues, name: e.target.value })
+            }
+          />
+          <TextField
+            error={Boolean(formErrors.email)}
+            helperText={formErrors.email}
+            variant="filled"
+            margin="normal"
+            type="email"
+            fullWidth
+            id="email"
+            label={"Email Address"}
+            name="email"
+            value={formValues.email}
+            onBlur={handleInputBlur}
+            onChange={(e) =>
+              setFormValues({ ...formValues, email: e.target.value })
+            }
+          />
+          <TextField
+            error={Boolean(formErrors.message)}
+            helperText={formErrors.message}
+            variant="filled"
+            margin="normal"
+            multiline
+            fullWidth
+            id="message"
+            label={"Message"}
+            name="message"
+            rows={4}
+            value={formValues.message}
+            onBlur={handleInputBlur}
+            onChange={(e) =>
+              setFormValues({ ...formValues, message: e.target.value })
+            }
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            className={classes.submitBtn}
+            disabled={sending}
+            endIcon={sending ? <CircularProgress size={20} /> : <SendIcon />}
           >
-            <Alert severity="error" variant="filled" elevation={6}>
-              <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
-                Error
-              </Typography>
-              {errorMessage}
-            </Alert>
-          </Box>
-        )}
+            Send Message
+          </Button>
+        </form>
       </Box>
-      {showMessage && (
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          position="fixed"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          zIndex={9999}
-          backgroundColor="rgba(0, 0, 0, 0.5)"
-        >
-          <Message />
-        </Box>
-      )}
     </Container>
   );
 };
-
-const useStyles = makeStyles((theme) => ({
-  form: {
-    width: "100%", // Fix IE 11 issue.
-  },
-  submitBtn: {
-    width: "100%",
-  },
-}));
 
 export default Contact;

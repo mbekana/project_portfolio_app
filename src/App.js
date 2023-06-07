@@ -12,6 +12,7 @@ import Message from "./components/message/Message";
 // images
 import Inventory from "./assets/images/Inventory_dashboard.png";
 import me from "./assets/images/me.jpg";
+import Resume from "./components/resume/Resume";
 
 const App = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -53,6 +54,9 @@ const App = () => {
         </Element>
         <Element name="contact" style={{ margin: "40px 0" }}>
           <Contact />
+        </Element>
+        <Element name="resume" style={{ margin: "40px 0" }}>
+          <Resume />
         </Element>
       </Router>
     </ThemeProvider>
