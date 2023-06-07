@@ -83,12 +83,7 @@ const Contact = () => {
         message: `Name: ${values.name}\nEmail: ${values.email}\n\n${values.message}`,
       };
 
-      await emailjs.send(
-        // "service_60xb7ud",
-        "template_94883si",
-        messageBody,
-        "3R2euMpeKbg3pkIxp"
-      );
+      await emailjs.send("service_id", "templateId", messageBody, "publicId");
 
       setSendEmailSuccess(true);
       setFormValues(initialValues); // Clear form values
